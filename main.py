@@ -22,7 +22,7 @@ print('\ngetting your page..')
 econ_response = get(economic_times_url+'/news')
 print('parsing your page...')
 economic_page_html = BeautifulSoup(econ_response.text, 'html.parser')
-print('obtained economic times')
+print('obtained economic times\n')
 
 economic_times.scrape_economic_times(economic_page_html, db)
 
@@ -34,6 +34,6 @@ print('\ngetting your page..')
 money_response = get(money_control_url+'/news')
 print('parsing your page...')
 money_page_html = BeautifulSoup(money_response.text, 'html.parser')
-print('obtained money control')
+print('obtained money control\n')
 
 money_control.scrape_money_control(money_page_html, db)

@@ -56,12 +56,6 @@ def sub_page(link, db):
     data_object['article'] = article.text
     data_object['subjectivity'] = TextBlob(article.text).sentiment.subjectivity
     data_object['polarity'] = TextBlob(article.text).sentiment.polarity
-    
-    print('date: ' + data_object['date'])
-    print('time: ' + data_object['time'])
-    print('article: true')
-    print('subjectivity: '+ str(data_object['subjectivity']))
-    print('polarity: '+ str(data_object['polarity']))
 
     add_to_database(db, data_object)
 

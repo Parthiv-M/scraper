@@ -44,12 +44,11 @@ def scrape_next_page(link, db):
     print('parsing next page...')
     link_html = BeautifulSoup(resp.text, 'html.parser')
     print('obtained next page')
-    tabs = [];
+    tabs = []
     tab_links = []
     tabs = link_html.find('div', class_='fleft').find_all('li', class_='clearfix')
     for i in tqdm(range(0, len(tabs))):
         tab_links.append(tabs[i].a.get('href'))
-#         pprint(tab_links[i])
         sleep(randint(5, 15))
     for i in tqdm(range(0, len(tab_links))):
         scrape_news(tab_links[i], db)
@@ -83,12 +82,6 @@ def scrape_news(link, db):
     data_object['article'] = article_text
     data_object['subjectivity'] = TextBlob(article_text).sentiment.subjectivity
     data_object['polarity'] = TextBlob(article_text).sentiment.polarity
-    
-    print('date: ' + data_object['date'])
-    print('time: ' + data_object['time'])
-    print('article: exists')
-    print('subjectivity: '+ str(data_object['subjectivity']))
-    print('polarity: '+ str(data_object['polarity']))
     
     add_to_database(db, data_object)
     
