@@ -67,7 +67,8 @@ def sub_news(name, link, db):
     links = []
     tabs = sub.find_all('div', class_='eachStory')
     for i in tqdm(range(0, len(tabs))):
-        links.append(tabs[i].h3.a.get('href'))
+        if(tabs[i].h3 != None):
+            links.append(tabs[i].h3.a.get('href'))
     for i in tqdm(range(0, len(links))):
         sub_page(base_page_link + links[i], db)
 
@@ -100,8 +101,8 @@ def scrape_economic_times(page_html, db):
         h_right.append(subsec_right[i].h2.a.get('href')) 
         
     economy_page(h_left[0] ,db)
-    for news in range(1, len(h_left)):
+    for i in range(1, len(h_left)):
         sub_news(subsec_left[i], h_left[i], db)
-    for news in range(0, len(h_right)):
+    for i in range(0, len(h_right)):
         sub_news(subsec_right[i], h_right[i], db)
     
