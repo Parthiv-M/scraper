@@ -12,22 +12,24 @@ from random import randint
 print("randomint imported")
 from textblob import TextBlob
 print("textblob imported")
+from dotenv import load_dotenv
+print("dotenv imported")
+import os
+print("os imported")
+from src.schema import news_model 
 
-data_object = {
-    'date': '', 
-    'time' : '',
-    'article': '',
-    'subjectivity': '',
-    'polarity' : ''
-}
+load_dotenv()
 
-base_page_link = 'https://economictimes.indiatimes.com' 
+url_one = os.getenv("URL_ONE")
 
-def add_to_database(db, data):
-    result = db.events.insert_one(data.copy())
-    print('\ncreated one event in database with ID: ' + str(result.inserted_id) + '\n')
+def add_to_database(model):
+    try:
+        model.save()
+        print('\ncreated one event in database with ID: ' + str(model.id) + '\n')
+    except:
+        print("Error saving article, moving on...")
 
-def sub_page(link, db):
+def sub_page(link):
     print('\nin sub-page function')
     subpage_response = get(link)
     subpage = BeautifulSoup(subpage_response.text, 'html.parser')
@@ -51,15 +53,17 @@ def sub_page(link, db):
     else: 
         return
     
-    data_object['date'] = ''.join(date_time.split(' ')[2:5])
-    data_object['time'] = ''.join(date_time.split(' ')[5:])
-    data_object['article'] = article.text
-    data_object['subjectivity'] = TextBlob(article.text).sentiment.subjectivity
-    data_object['polarity'] = TextBlob(article.text).sentiment.polarity
+    model = news_model.news(
+        date=''.join(date_time.split(' ')[2:5]),
+        time=''.join(date_time.split(' ')[5:]),
+        article=article.text,
+        subjectivity=TextBlob(article.text).sentiment.subjectivity,
+        polarity=TextBlob(article.text).sentiment.polarity 
+    )
+    
+    add_to_database(model)
 
-    add_to_database(db, data_object)
-
-def sub_news(name, link, db):
+def sub_news(name, link):
     print('\nin ' + str(name))
     sub_resposne = get(link)
     sub = BeautifulSoup(sub_resposne.text, 'html.parser')
@@ -70,9 +74,9 @@ def sub_news(name, link, db):
         if(tabs[i].h3 != None):
             links.append(tabs[i].h3.a.get('href'))
     for i in tqdm(range(0, len(links))):
-        sub_page(base_page_link + links[i], db)
+        sub_page(url_one + links[i])
 
-def economy_page(link, db):
+def economy_page(link):
     h_left = []
     h_right = []
     econ_response = get(link)
@@ -84,11 +88,11 @@ def economy_page(link, db):
     for i in range(0, len(sub_right)):
         h_right.append(sub_right[i].h2.a.get('href'))
     for i in tqdm(range(0, len(h_right))):
-        sub_news(sub_right[i].h2.text, h_right[i], db)
+        sub_news(sub_right[i].h2.text, h_right[i])
     for i in tqdm(range(0, len(h_left))):
-        sub_news(sub_left[i].h2.text, h_left[i], db)
+        sub_news(sub_left[i].h2.text, h_left[i])
 
-def scrape_economic_times(page_html, db):
+def scrape_economic_times(page_html):
     h_left = []
     h_right = []
     
@@ -100,9 +104,9 @@ def scrape_economic_times(page_html, db):
     for i in tqdm(range(0, len(subsec_right))):
         h_right.append(subsec_right[i].h2.a.get('href')) 
         
-    economy_page(h_left[0] ,db)
+    economy_page(h_left[0])
     for i in range(1, len(h_left)):
-        sub_news(subsec_left[i], h_left[i], db)
+        sub_news(subsec_left[i], h_left[i])
     for i in range(0, len(h_right)):
-        sub_news(subsec_right[i], h_right[i], db)
+        sub_news(subsec_right[i], h_right[i])
     

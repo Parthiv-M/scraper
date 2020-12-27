@@ -12,22 +12,22 @@ from random import randint
 print("randomint imported")
 from textblob import TextBlob
 print("textblob imported")
+from dotenv import load_dotenv
+print("doenv imported")
+import os
+print("os imported")
+from src.schema import news_model
 
-data_object = {
-    'date': '', 
-    'time' : '',
-    'article': '',
-    'subjectivity': '',
-    'polarity' : ''
-}
+load_dotenv()
 
-base_page_link = 'https://www.moneycontrol.com/'
+def add_to_database(model):
+    try:
+        model.save()
+        print('\ncreated one event in database with ID: ' + str(model.id) + '\n')
+    except:
+        print("Error saving article, moving on...")
 
-def add_to_database(db, data):
-    result = db.events.insert_one(data.copy())
-    print('\ncreated one event in database with ID: ' + str(result.inserted_id) + '\n')
-
-def scrape_money_control(page_html, db):
+def scrape_money_control(page_html):
     boxes = []
     page_links = []
     boxes = page_html.find_all('section', class_='block2')
@@ -35,10 +35,10 @@ def scrape_money_control(page_html, db):
         page_links.append(boxes[i].h2.a.get('href'))
         sleep(randint(5, 15))
     for i in tqdm(range(0, len(page_links))):
-        scrape_next_page(page_links[i], db)
+        scrape_next_page(page_links[i])
         sleep(randint(5, 15))
 
-def scrape_next_page(link, db):
+def scrape_next_page(link):
     print('getting next page..')
     resp = get(link)
     print('parsing next page...')
@@ -51,10 +51,10 @@ def scrape_next_page(link, db):
         tab_links.append(tabs[i].a.get('href'))
         sleep(randint(5, 15))
     for i in tqdm(range(0, len(tab_links))):
-        scrape_news(tab_links[i], db)
+        scrape_news(tab_links[i])
         sleep(randint(5, 15))
 
-def scrape_news(link, db):
+def scrape_news(link):
     print('getting news page..')
     news = get(link)
     print('parsing news page...')
@@ -76,13 +76,15 @@ def scrape_news(link, db):
     
     date = date_time.split("/")[0]
     time = date_time.split("/")[1]
+
+    model = news_model.news(
+        date=date,
+        time=time,
+        article=article_text,
+        subjectivity=TextBlob(article_text).sentiment.subjectivity,
+        polarity=TextBlob(article_text).sentiment.polarity 
+    )
     
-    data_object['date'] = date
-    data_object['time'] = time
-    data_object['article'] = article_text
-    data_object['subjectivity'] = TextBlob(article_text).sentiment.subjectivity
-    data_object['polarity'] = TextBlob(article_text).sentiment.polarity
-    
-    add_to_database(db, data_object)
+    add_to_database(model)
     
     sleep(randint(2, 8))
