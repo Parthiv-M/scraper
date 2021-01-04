@@ -17,17 +17,11 @@ print("dotenv imported")
 import os
 print("os imported")
 from src.schema import news_model 
+from src.controller import utility
 
 load_dotenv()
 
 url_one = os.getenv("URL_ONE")
-
-def add_to_database(model):
-    try:
-        model.save()
-        print('\ncreated one event in database with ID: ' + str(model.id) + '\n')
-    except:
-        print("Error saving article, moving on...")
 
 def sub_page(link):
     print('\nin sub-page function')
@@ -61,12 +55,11 @@ def sub_page(link):
         polarity=TextBlob(article.text).sentiment.polarity 
     )
     
-    add_to_database(model)
+    utility.add_to_database(model)
 
 def sub_news(name, link):
     print('\nin ' + str(name))
-    sub_resposne = get(link)
-    sub = BeautifulSoup(sub_resposne.text, 'html.parser')
+    sub = utility.get_page(link)
     tabs = []
     links = []
     tabs = sub.find_all('div', class_='eachStory')
@@ -79,8 +72,7 @@ def sub_news(name, link):
 def economy_page(link):
     h_left = []
     h_right = []
-    econ_response = get(link)
-    econ = BeautifulSoup(econ_response.text, 'html.parser')
+    econ = utility.get_page(link)
     sub_left = econ.find_all('div', class_='flt secBox')
     sub_right = econ.find_all('div', class_='flr secBox')
     for i in range(0, len(sub_left)):
@@ -95,15 +87,12 @@ def economy_page(link):
 def scrape_economic_times(page_html):
     h_left = []
     h_right = []
-    
     subsec_left = page_html.find_all('section', class_='subsecNews flt')
     subsec_right = page_html.find_all('section', class_='subsecNews flr')
-
     for i in tqdm(range(0, len(subsec_left))):
         h_left.append(subsec_left[i].h2.a.get('href')) 
     for i in tqdm(range(0, len(subsec_right))):
         h_right.append(subsec_right[i].h2.a.get('href')) 
-        
     economy_page(h_left[0])
     for i in range(1, len(h_left)):
         sub_news(subsec_left[i], h_left[i])

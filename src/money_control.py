@@ -17,15 +17,9 @@ print("doenv imported")
 import os
 print("os imported")
 from src.schema import news_model
+from src.controller import utility
 
 load_dotenv()
-
-def add_to_database(model):
-    try:
-        model.save()
-        print('\ncreated one event in database with ID: ' + str(model.id) + '\n')
-    except:
-        print("Error saving article, moving on...")
 
 def scrape_money_control(page_html):
     boxes = []
@@ -33,33 +27,22 @@ def scrape_money_control(page_html):
     boxes = page_html.find_all('section', class_='block2')
     for i in tqdm(range(2, len(boxes)-1)):
         page_links.append(boxes[i].h2.a.get('href'))
-        sleep(randint(5, 15))
     for i in tqdm(range(0, len(page_links))):
         scrape_next_page(page_links[i])
-        sleep(randint(5, 15))
 
 def scrape_next_page(link):
-    print('getting next page..')
-    resp = get(link)
-    print('parsing next page...')
-    link_html = BeautifulSoup(resp.text, 'html.parser')
-    print('obtained next page')
+    link_html = utility.get_page(link)
     tabs = []
     tab_links = []
     tabs = link_html.find('div', class_='fleft').find_all('li', class_='clearfix')
     for i in tqdm(range(0, len(tabs))):
         tab_links.append(tabs[i].a.get('href'))
-        sleep(randint(5, 15))
     for i in tqdm(range(0, len(tab_links))):
         scrape_news(tab_links[i])
         sleep(randint(5, 15))
 
 def scrape_news(link):
-    print('getting news page..')
-    news = get(link)
-    print('parsing news page...')
-    news_html = BeautifulSoup(news.text, 'html.parser')
-    print('obtained news page')
+    news_html = utility.get_page(link)
     article = []
     p_text = []
     if(news_html.find('div', class_='content_wrapper arti-flow') != None):
@@ -85,6 +68,6 @@ def scrape_news(link):
         polarity=TextBlob(article_text).sentiment.polarity 
     )
     
-    add_to_database(model)
+    utility.add_to_database(model)
     
     sleep(randint(2, 8))

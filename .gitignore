@@ -1,4 +1,8 @@
+.vscode
 src/__pycache__
+src/schema/__pycache__
+src/controller/__pycache__
+nifty50.csv
 data.csv
 .env
 .vscode

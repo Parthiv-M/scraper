@@ -1,11 +1,5 @@
-from bs4 import BeautifulSoup
-print("BeautifulSoup imported")
-from requests import get
-print("requests imported")
 from mongoengine import connect
-print("mongoengine imported") 
-import pymongo
-print("PyMongo imported")
+print("mongoengine imported")
 from src import economic_times
 print("economic_times imported")
 from src import money_control
@@ -14,6 +8,7 @@ from dotenv import load_dotenv
 print("dotenv imported")
 import os
 print("os imported")
+from src.controller import utility
 
 load_dotenv()
 
@@ -24,23 +19,13 @@ connect("eventsdatbase", host="localhost", port=27017)
 
 # economic times website
 
-print('\ngetting your page..')
-econ_response = get(url_one+'/news')
-print('parsing your page...')
-economic_page_html = BeautifulSoup(econ_response.text, 'html.parser')
-print('obtained economic times\n')
-
-economic_times.scrape_economic_times(economic_page_html)
+econ = utility.get_page(url_one + "/news")
+economic_times.scrape_economic_times(econ)
 
 # money control website
 
-print('\ngetting your page..')
-money_response = get(url_two+'/news')
-print('parsing your page...')
-money_page_html = BeautifulSoup(money_response.text, 'html.parser')
-print('obtained money control\n')
-
-money_control.scrape_money_control(money_page_html)
+mon = utility.get_page(url_two + "/news")
+money_control.scrape_money_control(mon)
 
 
 # use mongoengine - done
