@@ -1,21 +1,9 @@
-from bs4 import BeautifulSoup
-print("BeautifulSoup imported")
-from requests import get
-print("requests imported")
-from pprint import pprint
-print("pprint imported")
 from tqdm import tqdm
-print("tqdm imported")
 from time import sleep
-print("sleep imported")
 from random import randint
-print("randomint imported")
 from textblob import TextBlob
-print("textblob imported")
 from dotenv import load_dotenv
-print("doenv imported")
 import os
-print("os imported")
 from src.schema import news_model
 from src.controller import utility
 

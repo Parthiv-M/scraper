@@ -1,5 +1,4 @@
 from mongoengine import Document, IntField, StringField, FloatField
-import datetime
 
 class news(Document):
     date = StringField(required=True)

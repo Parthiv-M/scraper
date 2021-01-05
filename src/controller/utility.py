@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
-print("BeautifulSoup imported")
 from requests import get
-print("requests imported")
+import sys
 
 def get_page(string):
     print('\ngetting your page..')
@@ -17,4 +16,4 @@ def add_to_database(model):
         model.save()
         print('\ncreated one event in database with ID: ' + str(model.id) + '\n')
     except:
-        print("Error saving article, moving on...")
+        print("Error saving to database, moving on...")
