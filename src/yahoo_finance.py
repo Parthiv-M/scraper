@@ -29,8 +29,12 @@ def scrape_yahoo():
             date=tds[0].string,
             symbol=symbol,
             opening=locale.atof(tds[1].string),
-            closing=locale.atof(tds[4].string) 
+            closing=locale.atof(tds[4].string),
+            difference=((locale.atof(tds[4].string)) - (locale.atof(tds[1].string))) 
         )
+
+        print(model.opening)
+        print(model.difference)
 
         tds.clear()
 

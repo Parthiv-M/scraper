@@ -5,3 +5,4 @@ class stocks(Document):
     date = StringField(required=True)
     opening = FloatField(required=True)
     closing = FloatField(required=True)
+    difference = FloatField(required=True)

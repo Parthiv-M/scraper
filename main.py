@@ -4,6 +4,7 @@ from src import money_control
 from src import yahoo_finance
 from dotenv import load_dotenv
 import os
+from src.schema import stock_model
 from src.controller import utility
 
 load_dotenv()
@@ -14,6 +15,8 @@ url_two = os.getenv("URL_TWO")
 connect("eventsdatabase", host="localhost", port=27017)
 
 # yahoo finance for getting stock values
+if stock_model.stocks:
+    stock_model.stocks.drop_collection()
 yahoo_finance.scrape_yahoo()
 
 # economic times website
