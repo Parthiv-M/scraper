@@ -16,11 +16,16 @@ def scrape_yahoo():
 
     data = pd.read_csv(r'./nifty50.csv')
 
+    # data = pd.read_csv(r'./data.csv')
+
     for symbol in data["Symbol"]:
         sleep(randint(2, 5))
+        
         searchString = "https://in.finance.yahoo.com/quote/" + symbol + ".NS/history?p=" + symbol + ".NS&.tsrc=fin-srch"
         yah = utility.get_page(searchString)
-        trs = yah.find("tbody").find_all("tr")
+        
+        if yah.find("tbody").find_all("tr") != None:
+            trs = yah.find("tbody").find_all("tr")
 
         for td in trs[0]:
             tds.append(td)

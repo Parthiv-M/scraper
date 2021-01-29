@@ -48,12 +48,15 @@ def scrape_news(link):
     date = date_time.split("/")[0]
     time = date_time.split("/")[1]
 
+    symbols = utility.get_company(article_text)
+
     model = news_model.news(
         date=date,
         time=time,
         article=article_text,
         subjectivity=TextBlob(article_text).sentiment.subjectivity,
-        polarity=TextBlob(article_text).sentiment.polarity 
+        polarity=TextBlob(article_text).sentiment.polarity,
+        company_symbol=symbols
     )
     
     utility.add_to_database(model)

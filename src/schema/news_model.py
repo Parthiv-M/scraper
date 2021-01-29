@@ -1,4 +1,4 @@
-from mongoengine import Document, IntField, StringField, FloatField
+from mongoengine import Document, IntField, StringField, FloatField, ListField
 
 class news(Document):
     date = StringField(required=True)
@@ -6,4 +6,4 @@ class news(Document):
     article = StringField(required=True, unique=True)
     subjectivity = FloatField(required=True)
     polarity = FloatField(required=True)
-    company = StringField(required=True, default="")
+    company_symbol = ListField(StringField())

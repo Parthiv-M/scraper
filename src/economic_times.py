@@ -15,7 +15,8 @@ def sub_page(link):
     print('\nin sub-page function')
     subpage = utility.get_page(link)
     
-    date_time = subpage.find('time').text
+    if(subpage.find('time') != None):
+        date_time = subpage.find('time').text
     
     if(subpage.find('span',class_='cSprite icon_pp')):  # prime article
         print('prime article')
@@ -34,12 +35,15 @@ def sub_page(link):
     else: 
         return
     
+    symbols = utility.get_company(article.text)
+
     model = news_model.news(
         date=''.join(date_time.split(' ')[2:5]),
         time=''.join(date_time.split(' ')[5:]),
         article=article.text,
         subjectivity=TextBlob(article.text).sentiment.subjectivity,
-        polarity=TextBlob(article.text).sentiment.polarity 
+        polarity=TextBlob(article.text).sentiment.polarity,
+        company_symbol=symbols
     )
     
     utility.add_to_database(model)
