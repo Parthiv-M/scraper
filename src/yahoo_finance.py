@@ -11,7 +11,6 @@ load_dotenv()
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 def scrape_yahoo():
-    symbol = []
     tds = []
 
     data = pd.read_csv(r'./nifty50.csv')
@@ -27,8 +26,7 @@ def scrape_yahoo():
         if yah.find("tbody").find_all("tr") != None:
             trs = yah.find("tbody").find_all("tr")
 
-        for td in trs[0]:
-            tds.append(td)
+        tds.append(td for td in trs[0])
         
         model = stock_model.stocks(
             date=tds[0].string,
@@ -37,7 +35,7 @@ def scrape_yahoo():
             closing=locale.atof(tds[4].string),
             difference=((locale.atof(tds[4].string)) - (locale.atof(tds[1].string))) 
         )
-        
+
         tds.clear()
 
         utility.add_to_database(model)

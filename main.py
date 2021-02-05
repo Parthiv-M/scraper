@@ -19,11 +19,11 @@ if stock_model.stocks:
     stock_model.stocks.drop_collection()
 yahoo_finance.scrape_yahoo()
 
-# # economic times website
+# economic times website
 econ = utility.get_page(url_one + "/news")
 economic_times.scrape_economic_times(econ)
 
-# # money control website
+# money control website
 mon = utility.get_page(url_two + "/news")
 money_control.scrape_money_control(mon)
 

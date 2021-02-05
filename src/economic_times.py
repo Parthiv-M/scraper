@@ -52,9 +52,7 @@ def sub_news(name, link):
     tabs = []
     links = []
     tabs = sub.find_all('div', class_='eachStory')
-    for i in tqdm(range(0, len(tabs))):
-        if(tabs[i].h3 != None):
-            links.append(tabs[i].h3.a.get('href'))
+    links = [ tab.h3.a.get('href') for tab in tabs if tab.h3 != None] 
     for i in tqdm(range(0, len(links))):
         sub_page(url_one + links[i])
 
@@ -64,10 +62,8 @@ def economy_page(link):
     econ = utility.get_page(link)
     sub_left = econ.find_all('div', class_='flt secBox')
     sub_right = econ.find_all('div', class_='flr secBox')
-    for i in range(0, len(sub_left)):
-        h_left.append(sub_left[i].h2.a.get('href'))
-    for i in range(0, len(sub_right)):
-        h_right.append(sub_right[i].h2.a.get('href'))
+    h_left = [ left.h2.a.get('href') for left in sub_left ]
+    h_right = [ right.h2.a.get('href') for right in sub_right ]
     for i in tqdm(range(0, len(h_right))):
         sub_news(sub_right[i].h2.text, h_right[i])
     for i in tqdm(range(0, len(h_left))):
@@ -78,10 +74,8 @@ def scrape_economic_times(page_html):
     h_right = []
     subsec_left = page_html.find_all('section', class_='subsecNews flt')
     subsec_right = page_html.find_all('section', class_='subsecNews flr')
-    for i in tqdm(range(0, len(subsec_left))):
-        h_left.append(subsec_left[i].h2.a.get('href')) 
-    for i in tqdm(range(0, len(subsec_right))):
-        h_right.append(subsec_right[i].h2.a.get('href')) 
+    h_left = [ left.h2.a.get('href') for left in subsec_left ]
+    h_right = [ right.h2.a.get('href') for right in subsec_right ]
     economy_page(h_left[0])
     for i in range(1, len(h_left)):
         sub_news(subsec_left[i], h_left[i])

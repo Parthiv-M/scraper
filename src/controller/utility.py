@@ -42,12 +42,12 @@ def get_company(news):
     news = re.sub('[.,!?:;%&)(-'']', '', news)
     news = news.replace("Ltd", "Limited")
     news = news.replace("limited", "Limited")
-    clean = [word for word in word_tokenize(news) if not word in stopwords]
+    clean = [ word for word in word_tokenize(news) if not word in stopwords ]
     data = pd.read_csv(r'./data.csv')
     df = pd.DataFrame(data, columns=['SYMBOL', 'NAME OF COMPANY'])
     companies = data["NAME OF COMPANY"]
     for company in companies:
-        inter = [value for value in word_tokenize(company) if value in clean]
+        inter = [ value for value in word_tokenize(company) if value in clean ]
         if len(inter) > 1:
             if ' '.join(inter) in news:
                 final_company.append(company)
