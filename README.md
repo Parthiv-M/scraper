@@ -6,12 +6,12 @@ The objective of this part of the project was to collect data from websites that
 
 ### What I Used
 
-![](https://media.vlpt.us/images/seob/post/148ce76b-4a58-4c09-9ede-c7c3c2e463df/python_logo.png =200x)
+![](https://media.vlpt.us/images/seob/post/148ce76b-4a58-4c09-9ede-c7c3c2e463df/python_logo.png)
 
 
 **Python** is the language of choice for data collection and its related mathematical analysis.
 
-![](https://nakedsecurity.sophos.com/wp-content/uploads/sites/2/2017/01/mongodb.png?w=775 =300x)
+![](https://nakedsecurity.sophos.com/wp-content/uploads/sites/2/2017/01/mongodb.png?w=775)
 
 
 **MongoDB** is a scalable, fast, NoSQL database and is known for its efficient querying capabilities.
