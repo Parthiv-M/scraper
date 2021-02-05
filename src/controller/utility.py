@@ -7,6 +7,8 @@ import re
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize
+import seaborn as sn 
+import matplotlib.pyplot as plt 
 
 stopwords = nltk.corpus.stopwords.words('english')
 
@@ -58,12 +60,30 @@ def get_correlation(client):
     db = client['eventsdatabase']
     stocks = db['stocks']
     news = db['news']
-    news_arr = news.find({
+    news_arr = list(news.find({
         "company_symbol": {
             "$ne": []
         }    
-    }) 
+    })) 
+
     for news in news_arr:
         if news["company_symbol"] != []:
             for comp in news["company_symbol"]:
                 rel_comp.append(comp)
+    
+    stocks_arr = list(
+        stocks.find({
+            "symbol": {
+                "$in" : rel_comp
+            }  
+        })
+    )
+    
+    data = {
+        'difference' : [ stock["difference"] for stock in stocks_arr ],
+        'subjectivity' : [ news["subjectivity"] for news in news_arr ]
+    }
+
+    df = pd.DataFrame(data, columns=['difference', 'subjectivity'])
+    plt.scatter(df['difference'], df['subjectivity'])
+    plt.savefig('graph.png', bbox_inches='tight')
