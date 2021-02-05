@@ -37,10 +37,7 @@ def scrape_yahoo():
             closing=locale.atof(tds[4].string),
             difference=((locale.atof(tds[4].string)) - (locale.atof(tds[1].string))) 
         )
-
-        print(model.opening)
-        print(model.difference)
-
+        
         tds.clear()
 
         utility.add_to_database(model)

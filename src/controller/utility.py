@@ -6,8 +6,7 @@ from src.schema import stock_model
 import re
 import nltk
 from nltk.corpus import stopwords
-from nltk.tokenize import sent_tokenize, word_tokenize
-import seaborn as sn 
+from nltk.tokenize import sent_tokenize, word_tokenize 
 import matplotlib.pyplot as plt 
 
 stopwords = nltk.corpus.stopwords.words('english')
@@ -78,7 +77,7 @@ def get_correlation(client):
             }  
         })
     )
-    
+
     data = {
         'difference' : [ stock["difference"] for stock in stocks_arr ],
         'subjectivity' : [ news["subjectivity"] for news in news_arr ]

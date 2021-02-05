@@ -12,7 +12,6 @@ load_dotenv()
 url_one = os.getenv("URL_ONE")
 
 def sub_page(link):
-    print('\nin sub-page function')
     subpage = utility.get_page(link)
     
     if(subpage.find('time') != None):
@@ -49,7 +48,6 @@ def sub_page(link):
     utility.add_to_database(model)
 
 def sub_news(name, link):
-    print('\nin ' + str(name))
     sub = utility.get_page(link)
     tabs = []
     links = []

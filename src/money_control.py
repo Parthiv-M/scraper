@@ -7,8 +7,6 @@ import os
 from src.schema import news_model
 from src.controller import utility
 
-load_dotenv()
-
 def scrape_money_control(page_html):
     boxes = []
     page_links = []
