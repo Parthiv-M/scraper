@@ -15,8 +15,6 @@ def scrape_yahoo():
 
     data = pd.read_csv(r'./nifty50.csv')
 
-    # data = pd.read_csv(r'./data.csv')
-
     for symbol in data["Symbol"]:
         sleep(randint(2, 5))
         
@@ -26,15 +24,17 @@ def scrape_yahoo():
         if yah.find("tbody").find_all("tr") != None:
             trs = yah.find("tbody").find_all("tr")
 
-        tds.append(td for td in trs[0])
-        
-        model = stock_model.stocks(
-            date=tds[0].string,
-            symbol=symbol,
-            opening=locale.atof(tds[1].string),
-            closing=locale.atof(tds[4].string),
-            difference=((locale.atof(tds[4].string)) - (locale.atof(tds[1].string))) 
-        )
+        for td in trs[0]:
+            tds.append(td)
+
+        if tds[0].span.text is not None:
+            model = stock_model.stocks(
+                date=tds[0].span.text,
+                symbol=symbol,
+                opening=locale.atof(tds[1].span.text),
+                closing=locale.atof(tds[4].span.text),
+                difference=((locale.atof(tds[4].span.text)) - (locale.atof(tds[1].span.text))) 
+            )
 
         tds.clear()
 
