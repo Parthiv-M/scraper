@@ -2,7 +2,7 @@
 
 Data Science is defined as an interdisciplinary field that takes advantage of multiple algorithms and processes to derive knowledge from a vast amount of data. It is, therefore, not surprising that data forms an integral part of this process. The right amount of the right kind of data when combined with efficient algorithms and coding practices can give the best results for any application.
 
-The objective of this part of the project was to collect data from websites that deal with finance and economics, perform sentiment analysis, and eventually correlate news articles to changes in the stock prices of particular companies in the stock market.
+The objective of this part of the project was to collect data from websites that deal with finance and economics, perform sentiment analysis, and eventually correlate news articles to changes in the stock prices of particular companies in the stock market. A table containing a list of words and their associated frequencies was also prepared.
 
 ### What I Used
 

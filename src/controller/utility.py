@@ -7,7 +7,7 @@ import re
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize 
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 
 stopwords = nltk.corpus.stopwords.words('english')
 
@@ -36,13 +36,27 @@ def get_stock_symbol(final_company, df, news):
                     symbols.append(symbol)
     return symbols
 
+def clean_article(article):
+    article = article.replace('/(\n)/gm', " ")
+    article = re.sub('[.,!?:;%&$^*@#)/(-''`"—=+]', ' ', article)
+    article = re.sub('[0-9]', ' ', article)
+    article = article.replace("`|’|”|“", "'")
+    article = article.replace("/(\\x)/g", "")
+    new_stop_words = ["said", "also", "per", "cent", "would", "last", "first", "like", '\'', '\"', "\'", "\"", "’", "'s", "“", "”"]
+    stopwords.extend(new_stop_words)
+    clean = [ word for word in word_tokenize(article) if not word in stopwords ]
+    return clean
+
+def get_lower_case(article):
+    lower = [ word.casefold() for word in article ] 
+    return lower
+
 def get_company(news):
     final_company = []
     symbols = []
-    news = re.sub('[.,!?:;%&)(-'']', '', news)
+    clean = clean_article(news)
     news = news.replace("Ltd", "Limited")
     news = news.replace("limited", "Limited")
-    clean = [ word for word in word_tokenize(news) if not word in stopwords ]
     data = pd.read_csv(r'./data.csv')
     df = pd.DataFrame(data, columns=['SYMBOL', 'NAME OF COMPANY'])
     companies = data["NAME OF COMPANY"]
@@ -53,6 +67,39 @@ def get_company(news):
                 final_company.append(company)
                 symbols = get_stock_symbol(final_company, df, news)
     return symbols
+
+def sort_dict(dictionary):
+    sorted_dict = dict(sorted(dictionary.items(), key = lambda kv: kv[1]))
+    return dict(reversed(list(sorted_dict.items())))
+
+def count(el, dictionary):
+    if el in dictionary:
+        dictionary[el] += 1
+    else:
+        dictionary.update({el: 1})
+    return dictionary
+
+def get_frequency(client):
+    word_freq = {}
+    sorted_dict = {}
+    db = client['eventsdatabase']
+    news = db['news']
+    news_arr = list(news.find({}))
+    for news in news_arr:
+        news["article"] = news["article"].replace('/\r?\n|\r/g', " ")
+    for news in news_arr:
+        clean = clean_article(news["article"])
+        lower = get_lower_case(clean)
+        for w in lower:
+            if len(w) > 2:
+                word_freq = count(w, word_freq)
+    sorted_dict = sort_dict(dict(word_freq))
+    export_as_csv(sorted_dict)
+
+def export_as_csv(dictionary):
+    export_dict = {'word': list(dictionary.keys()), 'frequency': list(dictionary.values())}
+    df = pd.DataFrame(export_dict)
+    df.to_csv('./wordFrequency.csv')
 
 def get_correlation(client):
     rel_comp = []
