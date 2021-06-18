@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 stopwords = nltk.corpus.stopwords.words('english')
 
+# function to scape a given webpage
 def get_page(string):
     print('\ngetting your page..')
     response = get(string)
@@ -19,7 +20,7 @@ def get_page(string):
     print('obtained\n')
     return html
 
-
+# function to add data to the database
 def add_to_database(model):
     try:
         model.save()
@@ -27,6 +28,7 @@ def add_to_database(model):
     except:
         print("Error saving to database, moving on...")
 
+# function to get the stock symbol of company
 def get_stock_symbol(final_company, df, news):
     symbols = []
     for c in final_company:
@@ -36,6 +38,7 @@ def get_stock_symbol(final_company, df, news):
                     symbols.append(symbol)
     return symbols
 
+# function to clean text
 def clean_article(article):
     article = article.replace('/(\n)/gm', " ")
     article = re.sub('[.,!?:;%&$^*@#)/(-''`"—=+]', ' ', article)
@@ -47,10 +50,12 @@ def clean_article(article):
     clean = [ word for word in word_tokenize(article) if not word in stopwords ]
     return clean
 
+# function to convert text to lowercase
 def get_lower_case(article):
     lower = [ word.casefold() for word in article ] 
     return lower
 
+# function to extract the company names from a news article
 def get_company(news):
     final_company = []
     symbols = []
@@ -68,10 +73,12 @@ def get_company(news):
                 symbols = get_stock_symbol(final_company, df, news)
     return symbols
 
+# function to sort the dictionary of words
 def sort_dict(dictionary):
     sorted_dict = dict(sorted(dictionary.items(), key = lambda kv: kv[1]))
     return dict(reversed(list(sorted_dict.items())))
 
+# function to update the frequency of each word
 def count(el, dictionary):
     if el in dictionary:
         dictionary[el] += 1
@@ -79,6 +86,7 @@ def count(el, dictionary):
         dictionary.update({el: 1})
     return dictionary
 
+# function to find frequency of words in the article
 def get_frequency(client):
     word_freq = {}
     sorted_dict = {}
@@ -96,40 +104,45 @@ def get_frequency(client):
     sorted_dict = sort_dict(dict(word_freq))
     export_as_csv(sorted_dict)
 
+# function to export the final data of frequencies as a csv file
 def export_as_csv(dictionary):
     export_dict = {'word': list(dictionary.keys()), 'frequency': list(dictionary.values())}
     df = pd.DataFrame(export_dict)
     df.to_csv('./wordFrequency.csv')
 
-def get_correlation(client):
-    rel_comp = []
-    db = client['eventsdatabase']
-    stocks = db['stocks']
-    news = db['news']
-    news_arr = list(news.find({
-        "company_symbol": {
-            "$ne": []
-        }    
-    })) 
 
-    for news in news_arr:
-        if news["company_symbol"] != []:
-            for comp in news["company_symbol"]:
-                rel_comp.append(comp)
+# commented out for consideration later
+
+# function to get the correlation of stocks and news
+# def get_correlation(client):
+#     rel_comp = []
+#     db = client['eventsdatabase']
+#     stocks = db['stocks']
+#     news = db['news']
+#     news_arr = list(news.find({
+#         "company_symbol": {
+#             "$ne": []
+#         }    
+#     })) 
+
+#     for news in news_arr:
+#         if news["company_symbol"] != []:
+#             for comp in news["company_symbol"]:
+#                 rel_comp.append(comp)
     
-    stocks_arr = list(
-        stocks.find({
-            "symbol": {
-                "$in" : rel_comp
-            }  
-        })
-    )
+#     stocks_arr = list(
+#         stocks.find({
+#             "symbol": {
+#                 "$in" : rel_comp
+#             }  
+#         })
+#     )
 
-    data = {
-        'difference' : [ stock["difference"] for stock in stocks_arr ],
-        'subjectivity' : [ news["subjectivity"] for news in news_arr ]
-    }
+#     data = {
+#         'difference' : [ stock["difference"] for stock in stocks_arr ],
+#         'subjectivity' : [ news["subjectivity"] for news in news_arr ]
+#     }
 
-    df = pd.DataFrame(data, columns=['difference', 'subjectivity'])
-    plt.scatter(df['difference'], df['subjectivity'])
-    plt.savefig('graph.png', bbox_inches='tight')
+#     df = pd.DataFrame(data, columns=['difference', 'subjectivity'])
+#     plt.scatter(df['difference'], df['subjectivity'])
+#     plt.savefig('graph.png', bbox_inches='tight')

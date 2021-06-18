@@ -7,10 +7,12 @@ import os
 from src.schema import news_model 
 from src.controller import utility
 
+# loads environment variables
 load_dotenv()
 
 url_one = os.getenv("URL_ONE")
 
+# function to scrape a given sub-page
 def sub_page(link):
     subpage = utility.get_page(link)
     
@@ -47,6 +49,7 @@ def sub_page(link):
     
     utility.add_to_database(model)
 
+# function to scrape a given sub-news
 def sub_news(name, link):
     sub = utility.get_page(link)
     tabs = []
@@ -56,6 +59,7 @@ def sub_news(name, link):
     for i in tqdm(range(0, len(links))):
         sub_page(url_one + links[i])
 
+# function to scrape the economy page
 def economy_page(link):
     h_left = []
     h_right = []
@@ -69,6 +73,7 @@ def economy_page(link):
     for i in tqdm(range(0, len(h_left))):
         sub_news(sub_left[i].h2.text, h_left[i])
 
+# function to scrape the economic times website
 def scrape_economic_times(page_html):
     h_left = []
     h_right = []

@@ -6,6 +6,7 @@ import os
 from src.schema import news_model
 from src.controller import utility
 
+# function to scrape the money control website
 def scrape_money_control(page_html):
     boxes = []
     page_links = []
@@ -14,6 +15,7 @@ def scrape_money_control(page_html):
     for i in tqdm(range(2, len(page_links) - 1)):
         scrape_next_page(page_links[i])
 
+# function to scrape the next page of money control
 def scrape_next_page(link):
     link_html = utility.get_page(link)
     tabs = []
@@ -24,6 +26,7 @@ def scrape_next_page(link):
         scrape_news(tab_links[i])
         sleep(randint(5, 15))
 
+#  function to scrape each news
 def scrape_news(link):
     news_html = utility.get_page(link)
     article = []

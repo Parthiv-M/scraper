@@ -10,6 +10,7 @@ from src.controller import utility
 load_dotenv()
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
+# functino to scrape yahoo website for stock data
 def scrape_yahoo():
     tds = []
 
